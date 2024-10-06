@@ -1,0 +1,26 @@
+/* Ensure the sidebar is hidden completely when not visible */
+.hidden-sidebar {
+  display: none;
+}
+
+.hidden-sidebar app-sidenav {
+  width: 0;
+}
+
+/* Main content styles */
+#main-content {
+  transition: margin-left 0.3s; /* Smooth transition for sidebar toggling */
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Optional: If using a fixed sidebar width, adjust the margin when the sidebar is visible */
+:root {
+  --sidebar-width: 250px; /* Adjust this value as needed */
+}
+
+#main-content:not(.full-width) {
+  margin-left: var(--sidebar-width);
+}

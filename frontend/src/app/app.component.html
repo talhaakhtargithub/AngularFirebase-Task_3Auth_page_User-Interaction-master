@@ -1,0 +1,17 @@
+ <div [class.hidden-sidebar]="!isSidebarVisible">
+  <app-sidenav
+    (onToggleSideNav)="onToggleSideNav($event)">
+  </app-sidenav>
+</div>
+<div id="main-content" [class.full-width]="!isSidebarVisible" >
+  <app-body
+    [collapsed]="isSideNavCollapsed"
+    [screenWidth]="screenWidth">
+  </app-body>
+  <router-outlet></router-outlet>
+</div>
+
+
+
+
+

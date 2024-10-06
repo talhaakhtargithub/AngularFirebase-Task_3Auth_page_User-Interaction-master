@@ -1,0 +1,130 @@
+<div class="student-container mt-4">
+  <h1 class="text-center text-success">Student Database</h1>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-success" (click)="isShowForm = !isShowForm">
+      {{ isShowForm ? 'Add Student' : 'View Students' }}
+    </button>
+  </div>
+
+  <!-- Student Table Section -->
+  <div *ngIf="isShowForm">
+    <table class="table">
+      <thead class="table-success">
+        <tr>
+          <th>Picture</th>
+          <th>Full Name</th>
+          <th>Identification Number</th>
+          <th>Semester</th>
+          <th>Degree</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students">
+          <td>
+            <img *ngIf="student.uploadPicture"
+                 [src]="'http://localhost:3000/uploads/' + student.uploadPicture"
+                 alt="Student Picture"
+                 class="img-thumbnail"
+                 style="width: 50px; height: 50px;">
+            <span *ngIf="!student.uploadPicture">No Image</span>
+          </td>
+          <td>{{ student.firstName }} {{ student.lastName }}</td>
+          <td>{{ student.identificationNumber }}</td>
+          <td>{{ student.semester }}</td>
+          <td>{{ student.degreeTitle }}</td>
+          <td>
+            <div class="d-flex justify-content-center">
+              <button (click)="deleteStudent(student.identificationNumber)"
+                      class="btn btn-danger btn-sm"
+                      title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Student Form Section -->
+  <div *ngIf="!isShowForm">
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+      <div class="row mb-3">
+        <!-- First Column: Text Fields -->
+        <div class="col">
+          <div class="form-group" *ngFor="let field of [
+            {name: 'firstName', label: 'First Name'},
+            {name: 'lastName', label: 'Last Name'},
+            {name: 'identificationNumber', label: 'Identification Number'},
+            {name: 'yearOfStudy', label: 'Year of Study'}
+          ]">
+            <label [for]="field.name">{{ field.label }}</label>
+            <input type="text"
+                   [formControlName]="field.name"
+                   [id]="field.name"
+                   class="form-control"
+                   placeholder="Enter {{ field.label.toLowerCase() }}" />
+            <div *ngIf="studentForm.get(field.name)?.invalid && studentForm.get(field.name)?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+
+          <!-- Date of Birth Field with Native Date Picker -->
+          <div class="form-group">
+            <label for="dateOfBirth" class="text-success">Date of Birth</label>
+            <input type="date" formControlName="dateOfBirth" id="dateOfBirth" class="form-control" />
+            <div *ngIf="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+
+          <!-- Date of Admission Field with Native Date Picker -->
+          <div class="form-group">
+            <label for="dateOfAdmission" class="text-success">Date of Admission</label>
+            <input type="date" formControlName="dateOfAdmission" id="dateOfAdmission" class="form-control" />
+            <div *ngIf="studentForm.get('dateOfAdmission')?.invalid && studentForm.get('dateOfAdmission')?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Second Column: Dropdowns and File Upload -->
+        <div class="col">
+          <div class="form-group">
+            <label for="semester" class="text-success">Semester</label>
+            <select formControlName="semester" id="semester" class="form-select">
+              <option value="">Select Semester</option>
+              <option *ngFor="let semester of semesters" [value]="semester">{{ semester }}</option>
+            </select>
+            <div *ngIf="studentForm.get('semester')?.invalid && studentForm.get('semester')?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="degreeTitle" class="text-success">Degree Title</label>
+            <select formControlName="degreeTitle" id="degreeTitle" class="form-select">
+              <option value="">Select Degree</option>
+              <option *ngFor="let degree of degrees" [value]="degree">{{ degree }}</option>
+            </select>
+            <div *ngIf="studentForm.get('degreeTitle')?.invalid && studentForm.get('degreeTitle')?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="uploadPicture" class="text-success">Upload Picture</label>
+            <input type="file" (change)="onFileChange($event)" id="uploadPicture" class="form-control" />
+            <div *ngIf="studentForm.get('uploadPicture')?.invalid && studentForm.get('uploadPicture')?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="studentForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>

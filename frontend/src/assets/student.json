@@ -1,0 +1,438 @@
+[
+  {
+    "name": "Eve Davis",
+    "id": "ST001",
+    "semester": "",
+    "course": {
+      "code": "CS1101",
+      "title": "Applications of Information & Communication Technologies"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Alice Johnson",
+    "id": "ST002",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1102",
+      "title": "Data Structures and Algorithms"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Bob Smith",
+    "id": "ST003",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1103",
+      "title": "Database Management Systems"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Carol Wilson",
+    "id": "ST004",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1104",
+      "title": "Computer Networks"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "David Lee",
+    "id": "ST005",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1105",
+      "title": "Software Engineering"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Eva Green",
+    "id": "ST006",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1106",
+      "title": "Operating Systems"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Frank Brown",
+    "id": "ST007",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1107",
+      "title": "Web Technologies"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Grace Adams",
+    "id": "ST008",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1108",
+      "title": "Computer Graphics"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Hannah Clark",
+    "id": "ST009",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1109",
+      "title": "Artificial Intelligence"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Ivy Lewis",
+    "id": "ST010",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1110",
+      "title": "Machine Learning"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Jack Taylor",
+    "id": "ST011",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1111",
+      "title": "Network Security"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Karen Lewis",
+    "id": "ST012",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1112",
+      "title": "Human-Computer Interaction"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Louis Walker",
+    "id": "ST013",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1113",
+      "title": "Digital Image Processing"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Mia Anderson",
+    "id": "ST014",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1114",
+      "title": "Cloud Computing"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Nina Robinson",
+    "id": "ST015",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1115",
+      "title": "Big Data Analytics"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Oliver Harris",
+    "id": "ST016",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1116",
+      "title": "Natural Language Processing"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Paula Walker",
+    "id": "ST017",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1117",
+      "title": "Information Retrieval"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Quincy Evans",
+    "id": "ST018",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1118",
+      "title": "Embedded Systems"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Rachel Miller",
+    "id": "ST019",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1119",
+      "title": "Cybersecurity"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Steve Wilson",
+    "id": "ST020",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1120",
+      "title": "Game Development"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Tina Harris",
+    "id": "ST021",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1121",
+      "title": "Human-Robot Interaction"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Ursula Thompson",
+    "id": "ST022",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1122",
+      "title": "Computational Biology"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Victor Martinez",
+    "id": "ST023",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1123",
+      "title": "Virtual Reality"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Wendy King",
+    "id": "ST024",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1124",
+      "title": "Quantum Computing"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Xander Lee",
+    "id": "ST025",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1125",
+      "title": "Augmented Reality"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "absent" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Yvonne Davis",
+    "id": "ST026",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1126",
+      "title": "Distributed Systems"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  },
+  {
+    "name": "Zachary Robinson",
+    "id": "ST027",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1127",
+      "title": "Advanced Algorithms"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Neutral"
+  },
+  {
+    "name": "Amelia Evans",
+    "id": "ST028",
+    "semester": "2020-2024",
+    "course": {
+      "code": "CS1128",
+      "title": "Internet of Things"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "present" },
+      { "date": "2024-09-03", "status": "absent" }
+    ],
+    "emotion": "Non-serious"
+  },
+  {
+    "name": "Benjamin Adams",
+    "id": "ST029",
+    "semester": "2021-2025",
+    "course": {
+      "code": "CS1129",
+      "title": "Bioinformatics"
+    },
+    "attendanceRecords": [
+      { "date": "2024-09-01", "status": "present" },
+      { "date": "2024-09-02", "status": "absent" },
+      { "date": "2024-09-03", "status": "present" }
+    ],
+    "emotion": "Serious"
+  }
+]
+

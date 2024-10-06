@@ -1,0 +1,112 @@
+<div class="teacher-container mt-4">
+  <h1 class="text-center text-success">Teacher Database</h1>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-success" (click)="toggleView()">
+      {{ isShowPage ? 'View Teachers' : 'Add Teacher' }}
+    </button>
+  </div>
+
+  <div *ngIf="!isShowPage">
+    <table class="table">
+      <thead class="table-success">
+        <tr>
+          <th>Picture</th>
+          <th>Full Name</th>
+          <th>CNIC</th>
+          <th>Semester</th>
+          <th>Courses</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let teacher of teachers">
+          <td>
+            <img *ngIf="teacher.uploadPicture"
+                 [src]="'http://localhost:3000/uploads/' + teacher.uploadPicture"
+                 alt="TeacherPicture"
+                 class="img-thumbnail"
+                 style="width: 50px; height: 50px;">
+            <span *ngIf="!teacher.uploadPicture">No Image</span>
+          </td>
+          <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+          <td>{{ teacher.cnic }}</td>
+          <td>{{ teacher.semester }}</td>
+          <td>{{ teacher.courses.join(', ') }}</td>
+          <td>
+            <div class="d-flex justify-content-center">
+
+              <button (click)="deleteTeacher(teacher.cnic)" class="btn btn-danger btn-sm" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="isShowPage">
+    <form [formGroup]="teacherForm" (ngSubmit)="onSubmit()">
+      <div class="row mb-3">
+        <div class="col">
+          <label for="firstName" class="text-success">First Name</label>
+          <input type="text" id="firstName" formControlName="firstName" class="form-control" placeholder="Enter first name" required />
+          <div *ngIf="teacherForm.get('firstName')?.invalid && (teacherForm.get('firstName')?.dirty || teacherForm.get('firstName')?.touched)">
+            <small class="text-danger">First name is required.</small>
+          </div>
+        </div>
+        <div class="col">
+          <label for="lastName" class="text-success">Last Name</label>
+          <input type="text" id="lastName" formControlName="lastName" class="form-control" placeholder="Enter last name" required />
+          <div *ngIf="teacherForm.get('lastName')?.invalid && (teacherForm.get('lastName')?.dirty || teacherForm.get('lastName')?.touched)">
+            <small class="text-danger">Last name is required.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="cnic" class="text-success">CNIC</label>
+        <input type="text" id="cnic" formControlName="cnic" class="form-control" placeholder="Enter 13-digit CNIC" required />
+        <div *ngIf="teacherForm.get('cnic')?.errors?.['required']">
+          <small class="text-danger">CNIC is required.</small>
+        </div>
+        <div *ngIf="teacherForm.get('cnic')?.errors?.['maxlength']">
+          <small class="text-danger">CNIC must be 13 digits.</small>
+        </div>
+        <div *ngIf="teacherForm.get('cnic')?.errors?.['pattern']">
+          <small class="text-danger">CNIC must be numeric.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="semester" class="text-success">Semester</label>
+        <select id="semester" formControlName="semester" class="form-select" required>
+          <option value="" disabled>Select semester</option>
+          <option *ngFor="let semester of semesters" [value]="semester">{{ semester }}</option>
+        </select>
+        <div *ngIf="teacherForm.get('semester')?.invalid && (teacherForm.get('semester')?.dirty || teacherForm.get('semester')?.touched)">
+          <small class="text-danger">Semester selection is required.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="courses" class="text-success">Courses</label>
+        <select id="courses" formControlName="courses" class="form-select" required>
+          <option value="" disabled>Select course</option>
+          <option *ngFor="let course of courses" [value]="course.title">{{ course.title }}</option>
+        </select>
+        <div *ngIf="teacherForm.get('courses')?.invalid && (teacherForm.get('courses')?.dirty || teacherForm.get('courses')?.touched)">
+          <small class="text-danger">Course selection is required.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="uploadPicture" class="text-success">Upload Picture</label>
+        <input type="file" id="uploadPicture" (change)="onFileChange($event)" class="form-control" accept="image/*" />
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="teacherForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>

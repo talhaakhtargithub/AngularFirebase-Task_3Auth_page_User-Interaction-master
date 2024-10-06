@@ -1,0 +1,87 @@
+<div class="dashboard">
+  <div class="filter-section">
+    <select [(ngModel)]="selectedSession" class="filter-select">
+      <option *ngFor="let session of ['Semester_I', 'Semester_II']" [value]="session">{{ session }}</option>
+    </select>
+    <select [(ngModel)]="selectedCourse" class="filter-select">
+      <option *ngFor="let course of courses" [value]="course.code">{{ course.title }}</option>
+    </select>
+    <select [(ngModel)]="selectedTime" class="filter-select">
+      <option value="week">Week</option>
+      <option value="month">Month</option>
+      <option value="year">Year</option>
+    </select>
+    <button (click)="applyFilter()" class="filter-button">Filter</button>
+  </div>
+
+  <div class="stats-section">
+    <!-- Student Attendance -->
+    <div class="card student-attendance-card">
+      <h3>Student Attendance</h3>
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="studentAttendanceData"
+          [options]="studentAttendanceOptions"
+          [type]="studentAttendanceChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Teacher Attendance -->
+    <div class="card teacher-attendance-card">
+      <h3>Teacher Attendance</h3>
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="teacherAttendanceData"
+          [type]="teacherAttendanceChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Course Assessment -->
+    <div class="card course-assessment-card">
+      <h3>Course Assessment</h3>
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="courseAssessmentData"
+          [type]="courseAssessmentChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Emotion Assessment -->
+    <div class="card emotion-assessment-card">
+      <h3>Emotion Assessment</h3>
+      <div class="chart-container">
+        <canvas baseChart
+          [data]="emotionData"
+          [type]="emotionChartType">
+        </canvas>
+      </div>
+
+    </div>
+
+    <!-- Individual Student Assessment -->
+    <div class="card individual-assessment-card">
+      <h3>Individual Student Assessment</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Semester</th>
+            <th>Attendance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students">
+            <td>{{ student.name }}</td>
+            <td>{{ student.id }}</td>
+            <td>{{ student.semester }}</td>
+            <td>{{ student.attendance }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
