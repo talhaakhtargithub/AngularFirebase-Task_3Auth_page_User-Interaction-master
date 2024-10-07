@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ChartData, ChartType, ChartOptions } from 'chart.js';
 import { ToastrService } from 'ngx-toastr';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,6 +11,16 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class DashboardComponent implements OnInit {
   loading: boolean = true;
+  sessions: String[] = [
+    'Semester 1',
+    'Semester 2',
+    'Semester 3',
+    'Semester 4',
+    'Semester 5',
+    'Semester 6',
+    'Semester 7',
+    'Semester 8'
+  ];
 
   // Student Attendance Data
   public studentAttendanceData: ChartData<'bar'> = {
@@ -86,7 +97,7 @@ export class DashboardComponent implements OnInit {
 
   applyFilter(): void {
     if (this.selectedSession && this.selectedCourse) {
-      this.http.get<any[]>('http://localhost:3000/realstudents').subscribe(
+      this.http.get<any[]>(`http://localhost:3000/realstudents?session=${this.selectedSession}&course=${this.selectedCourse}&time=${this.selectedTime}`).subscribe(
         studentData => {
           const uniqueStudents = this.getUniqueStudentsById(studentData);
           uniqueStudents.sort((a, b) => a.id - b.id);
@@ -108,35 +119,60 @@ export class DashboardComponent implements OnInit {
       );
     }
   }
+  uniqueIDs: string[] = [];
 
-  updateTeacherAttendance(): void {
-    this.http.get<any[]>(`http://localhost:3000/realteachers`).subscribe(
-      teacherData => {
-        const attendanceCounts: { [key: string]: number } = {};
-        const days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        teacherData.forEach(teacher => {
-          const day = new Date(teacher.Time).toLocaleDateString('en-US', { weekday: 'short' });
-          attendanceCounts[day] = (attendanceCounts[day] || 0) + (teacher.Attendance_Status === 'Present' ? 1 : 0);
-        });
-
-        const counts = days.map(day => attendanceCounts[day] || 0);
-
-        this.teacherAttendanceData = {
-          labels: days,
-          datasets: [{ data: counts, label: 'Teacher Attendance' }]
-        };
-
-        this.loading = false; // Data loading complete
-        this.updateCourseAssessment();
-        this.toastr.success('Teacher attendance updated successfully!'); // Success message
-      },
-      error => {
-        console.error('Error loading teacher data:', error);
-        this.toastr.error('Failed to load teacher data. Please try again.'); // Error message
-      }
+  getUniqueIDs(): Observable<string[]> {
+    const apiUrl = 'http://localhost:3000/realteachers'; // API endpoint
+    return this.http.get<any[]>(apiUrl).pipe(
+      map(teachers => {
+        this.uniqueIDs = teachers.map(teacher => teacher.identificationNo); // Extract unique IDs
+        console.log('Unique IDs fetched:', this.uniqueIDs);
+        return this.uniqueIDs; // Return the unique IDs
+      }),
+      catchError(error => {
+        console.error('Error fetching unique IDs:', error);
+        return throwError('Failed to fetch unique IDs.');
+      })
     );
   }
+
+  updateTeacherAttendance(): void {
+    this.getUniqueIDs().subscribe({
+      next: (uniqueIDs) => {
+        this.http.get<any[]>(`http://localhost:3000/realteachers`).subscribe(
+          teacherData => {
+            const attendanceCounts: { [key: string]: number } = {};
+            const days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+            teacherData.forEach(teacher => {
+              const day = new Date(teacher.Time).toLocaleDateString('en-US', { weekday: 'short' });
+              attendanceCounts[day] = (attendanceCounts[day] || 0) + (teacher.Attendance_Status === 'Present' ? 1 : 0);
+            });
+
+            const counts = days.map(day => attendanceCounts[day] || 0);
+
+            this.teacherAttendanceData = {
+              labels: days,
+              datasets: [{ data: counts, label: 'Teacher Attendance' }]
+            };
+
+            this.loading = false; // Data loading complete
+            this.updateCourseAssessment();
+            this.toastr.success('Teacher attendance updated successfully!'); // Success message
+          },
+          error => {
+            console.error('Error loading teacher data:', error);
+            this.toastr.error('Failed to load teacher data. Please try again.'); // Error message
+          }
+        );
+      },
+      error: (error) => {
+        this.loading = false; // Stop loading if there's an error fetching unique IDs
+        this.toastr.error(error); // Show error message
+      }
+    });
+  }
+
 
   updateEmotionData(): void {
     this.http.get<any[]>('http://localhost:3000/realstudents').subscribe(
@@ -301,3 +337,4 @@ const teacherAttendance = teacherData && teacherData.length > 0
 
 
 }
+

@@ -33,9 +33,13 @@ import { SettingsComponent } from './settings/settings.component';
 import { FavoriteComponent } from './favorite/favorite.component';
 import { TeacherComponent } from './products/teacher/teacher.component';
 import { StudentComponent } from './products/student/student.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { FilterComponent } from './dashboard/filter/filter.component';
 import { StudentAttendanceComponent } from './dashboard/student-attendance/student-attendance.component';
 import { TeacherAttendanceComponent } from './dashboard/teacher-attendance/teacher-attendance.component';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { CourseAssessmentComponent } from './dashboard/course-assessment/course-assessment.component';
+import { EmotionAssessmentComponent } from './dashboard/emotion-assessment/emotion-assessment.component';
+import { StudentTableComponent } from './dashboard/student-table/student-table.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -64,8 +68,13 @@ const routes: Routes = [
     FavoriteComponent,
     TeacherComponent,
     StudentComponent,
+    FilterComponent,
     StudentAttendanceComponent,
     TeacherAttendanceComponent,
+    CourseAssessmentComponent,
+    EmotionAssessmentComponent,
+    StudentTableComponent,
+
 
 
 

@@ -11,7 +11,7 @@ interface Teacher {
   cnic: string;
   semester: string;
   courses: string[];
-  uploadPicture?: string | null;
+  uploadPicture: string | null;
 }
 
 interface Course {
@@ -33,6 +33,7 @@ export class TeacherComponent implements OnInit {
     'Semester 4', 'Semester 5', 'Semester 6',
     'Semester 7', 'Semester 8'
   ];
+  selectedCourses: string[] = []; // Array to hold selected courses
   isShowPage: boolean = false;
   private imageUrl: string | null = null; // Variable to hold the image URL
   private socketSubscription!: Subscription; // Subscription for socket events
@@ -52,8 +53,8 @@ export class TeacherComponent implements OnInit {
       lastName: ['', Validators.required],
       cnic: ['', [Validators.required, Validators.maxLength(13), Validators.pattern(/^\d{13}$/)]],
       semester: ['', Validators.required],
-      courses: [[], Validators.required],
-      uploadPicture: [null]
+      courses: [[], Validators.required], // Initialize as an array
+      uploadPicture: [null,Validators.required]
     });
   }
 
@@ -157,6 +158,7 @@ export class TeacherComponent implements OnInit {
       URL.revokeObjectURL(this.imageUrl); // Revoke the object URL
       this.imageUrl = null; // Clear the image URL reference
     }
+    this.selectedCourses = []; // Reset selected courses
   }
 
   toggleView(): void {
@@ -180,4 +182,23 @@ export class TeacherComponent implements OnInit {
         });
     }
   }
+  onCourseSelect(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement; // Cast to HTMLSelectElement
+    const selectedCourse = selectElement.value; // Get the selected value
+
+    // Check if the course is already selected
+    if (selectedCourse && !this.selectedCourses.includes(selectedCourse)) {
+      this.selectedCourses.push(selectedCourse); // Add course to selectedCourses array
+      this.teacherForm.get('courses')?.setValue(this.selectedCourses); // Update form with selected courses
+    } else if (this.selectedCourses.includes(selectedCourse)) {
+      this.toastr.warning('Course already selected!'); // Notify user if course is already selected
+    }
+  }
+
+  removeCourse(courseCode: string): void {
+    this.selectedCourses = this.selectedCourses.filter(course => course !== courseCode); // Remove course from selectedCourses
+    this.teacherForm.get('courses')?.setValue(this.selectedCourses); // Update form with selected courses
+    this.toastr.info('Course removed!'); // Notify user
+  }
+
 }

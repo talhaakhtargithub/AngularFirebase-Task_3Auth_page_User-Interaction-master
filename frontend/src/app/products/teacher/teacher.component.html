@@ -35,7 +35,6 @@
           <td>{{ teacher.courses.join(', ') }}</td>
           <td>
             <div class="d-flex justify-content-center">
-
               <button (click)="deleteTeacher(teacher.cnic)" class="btn btn-danger btn-sm" title="Delete">
                 <i class="fas fa-trash"></i>
               </button>
@@ -92,14 +91,21 @@
 
       <div class="mb-3">
         <label for="courses" class="text-success">Courses</label>
-        <select id="courses" formControlName="courses" class="form-select" required>
+        <select id="courses" class="form-select" (change)="onCourseSelect($event)">
           <option value="" disabled>Select course</option>
           <option *ngFor="let course of courses" [value]="course.title">{{ course.title }}</option>
         </select>
-        <div *ngIf="teacherForm.get('courses')?.invalid && (teacherForm.get('courses')?.dirty || teacherForm.get('courses')?.touched)">
-          <small class="text-danger">Course selection is required.</small>
+        <div *ngIf="teacherForm.get('courses')?.touched && teacherForm.get('courses')?.value.length === 0">
+          <small class="text-danger">At least one course must be selected.</small>
+        </div>
+
+        <div *ngIf="selectedCourses.length > 0" class="mt-3">
+          <span class="badge bg-success me-2" *ngFor="let course of selectedCourses">
+            {{ course }} <span class="ms-2" style="cursor: pointer;" (click)="removeCourse(course)">&#10005;</span>
+          </span>
         </div>
       </div>
+
 
       <div class="mb-3">
         <label for="uploadPicture" class="text-success">Upload Picture</label>
