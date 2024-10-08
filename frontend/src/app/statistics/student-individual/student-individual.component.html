@@ -1,0 +1,98 @@
+<div class="container-fluid d-flex flex-column vh-100">
+  <!-- Filter Section -->
+  <div class="row mb-3">
+    <div class="col-md-4 col-sm-12 mb-2">
+      <input type="text" class="form-control h-100" placeholder="Enter ID" [(ngModel)]="studentId" />
+    </div>
+    <div class="col-md-2 col-sm-12 mb-2">
+      <button class="btn btn-primary w-100 h-100" (click)="filterStudentData(studentId)">Filter</button>
+    </div>
+  </div>
+
+  <!-- Student Details and Courses Section -->
+  <div class="row flex-grow-1 mb-3">
+    <div class="col-lg-6 col-md-12 mb-4">
+      <div class="card h-100">
+        <div class="row g-0">
+          <div class="col-lg-8">
+            <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+              <h5 class="card-title fw-bold mb-4">Student Details</h5>
+              <p class="mb-1"><strong>Name:</strong> {{ student.name }}</p>
+              <p class="mb-1"><strong>ID:</strong> {{ student.id }}</p>
+              <p class="mb-1"><strong>Session:</strong> {{ student.yearOfStudy }}</p>
+              <p class="mb-1"><strong>Semester:</strong> {{ student.semester }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 d-flex align-items-center justify-content-center mt-4">
+            <div class="text-center ">
+              <img *ngIf="student.uploadPicture"
+                   [src]="'http://localhost:3000/uploads/' + student.uploadPicture"
+                   alt="Student Picture"
+                   class="img-thumbnail"
+                   style="width: 200px; height: 200px;">
+              <span *ngIf="!student.uploadPicture" class="text-muted">No Image</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Courses Section -->
+   <!-- Courses Section -->
+<div class="col-lg-6 col-md-12 mb-2">
+  <div class="card h-100 d-flex flex-column">
+    <div class="card-body flex-grow-1">
+      <h5 class="card-title">Courses</h5>
+      <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Courses</th>
+              <th>Session</th>
+              <th>Semester</th>
+              <th>Credit Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let course of courses; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ course.title }}</td>
+              <td>{{ course.session }}</td>
+              <td>{{ course.semester }}</td>
+              <td>{{ course.creditHours }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- Charts Section -->
+  <div class="row flex-grow-1">
+    <!-- Student Assessment (Doughnut Chart) -->
+    <div class="col-lg-6 col-md-12 mb-2">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Student Assessment</h5>
+          <canvas baseChart [data]="assessmentData" [type]="'doughnut'" class="chart-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Attendance (Bar Chart) -->
+    <div class="col-lg-6 col-md-12 mb-2">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Student Attendance</h5>
+          <canvas baseChart [data]="attendanceData" [type]="'bar'" class="chart-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

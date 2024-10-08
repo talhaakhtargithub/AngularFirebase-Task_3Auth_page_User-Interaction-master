@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 // Create HTTP server and attach Socket.IO
 const server = http.createServer(app);
 const io = new Server(server);
-
+app.use(cors());
 // Middleware for CORS
 app.use(cors({
     origin: process.env.ALLOWED_ORIGIN || 'http://localhost:4200', // Allow requests from this origin (Angular app)

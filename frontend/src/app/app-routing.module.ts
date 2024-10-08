@@ -18,6 +18,8 @@ import { ForgotPasswordComponent } from './component/forgot-password/forgot-pass
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { VarifyEmailComponent } from './component/varify-email/varify-email.component';
+import { StudentIndividualComponent } from './statistics/student-individual/student-individual.component';
+import { TeacherIndividualComponent } from './statistics/teacher-individual/teacher-individual.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -43,8 +45,9 @@ const routes: Routes = [
     path: 'statistics',
     component: StatisticsComponent,
     children: [
-      { path: '', redirectTo: 'student-table', pathMatch: 'full' },
-
+      { path: '', redirectTo: 'student-individual', pathMatch: 'full' },
+      { path: 'student-individual', component: StudentIndividualComponent },
+      { path: 'teacher-individual', component: TeacherIndividualComponent }
     ]
   },
 

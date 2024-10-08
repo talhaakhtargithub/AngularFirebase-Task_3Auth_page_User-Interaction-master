@@ -31,6 +31,14 @@
         "aria-progressbar-name": "off",
         "aria-valid-attr-value": "off"
       }
+    ],
+    "compat-api/css": [
+      "default",
+      {
+        "ignore": [
+          "-webkit-font-feature-settings"
+        ]
+      }
     ]
   }
 }

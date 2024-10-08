@@ -1,0 +1,2 @@
+Connected to MongoDB
+Server is running at http://localhost:\\.\pipe\c98d1891-e069-4fb0-b076-870b2471f78f

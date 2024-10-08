@@ -15,7 +15,7 @@ exports.getAllStudents = async (req, res) => {
 // Get a student by identification number
 exports.getStudentById = async (req, res) => {
     try {
-        const student = await Student.findOne({ identificationNumber: req.params.id });
+        const student = await Student.findOne({ id: req.params.id });
         if (!student) return res.status(404).json({ message: 'Student not found' });
         res.json(student);
     } catch (err) {
@@ -25,14 +25,14 @@ exports.getStudentById = async (req, res) => {
 
 // Create a new student
 exports.createStudent = async (req, res, io) => {
-    const { firstName, lastName, semester, identificationNumber, dateOfBirth, dateOfAdmission, degreeTitle, yearOfStudy } = req.body;
+    const { firstName, lastName, semester, id, dateOfBirth, dateOfAdmission, degreeTitle, yearOfStudy } = req.body;
     const uploadPicture = req.file ? req.file.filename : null;
 
     const newStudent = new Student({
         firstName,
         lastName,
         semester,
-        identificationNumber,
+        id,
         dateOfBirth,
         dateOfAdmission,
         degreeTitle,
@@ -56,7 +56,7 @@ exports.updateStudent = async (req, res, io) => {
 
     try {
         const updatedStudent = await Student.findOneAndUpdate(
-            { identificationNumber: req.params.id },
+            { id: req.params.id },
             { firstName, lastName, semester, dateOfBirth, dateOfAdmission, degreeTitle, yearOfStudy, uploadPicture },
             { new: true }
         );
@@ -74,7 +74,7 @@ exports.updateStudent = async (req, res, io) => {
 exports.deleteStudent = async (req, res, io) => {
     try {
         // Find the student to delete
-        const studentToDelete = await Student.findOne({ identificationNumber: req.params.id });
+        const studentToDelete = await Student.findOne({ id: req.params.id });
         if (!studentToDelete) return res.status(404).json({ message: 'Student not found' });
         
         // Delete the student's picture if it exists
@@ -90,7 +90,7 @@ exports.deleteStudent = async (req, res, io) => {
         }
 
         // Delete the student record
-        const result = await Student.deleteOne({ identificationNumber: req.params.id });
+        const result = await Student.deleteOne({ id: req.params.id });
         io.emit('studentDeleted', req.params.id); // Emit event when a student is deleted
         res.status(204).end(); // No content
         
@@ -105,9 +105,9 @@ exports.deleteStudent = async (req, res, io) => {
 };
 
 // Check identification number for uniqueness
-exports.checkIdentificationNumberExists = async (req, res) => {
+exports.checkidExists = async (req, res) => {
     try {
-        const student = await Student.findOne({ identificationNumber: req.params.id });
+        const student = await Student.findOne({ id: req.params.id });
         if (student) return res.status(400).json({ message: 'Identification number already exists' });
         res.json({ message: 'Identification number is available' });
     } catch (err) {

@@ -1,0 +1,92 @@
+<div class="container my-4">
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Enter Name">
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Enter ID">
+    </div>
+    <div class="col-md-3">
+      <select class="form-control">
+        <option>Select Time Category</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-primary w-100">Filter</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Teacher Details</h5>
+          <p>Name: {{ teacher.name }}</p>
+          <p>ID: {{ teacher.id }}</p>
+          <p>No. of Semesters Teaching: {{ teacher.semesters }}</p>
+          <p>No. of Courses Teaching: {{ teacher.courses }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <img src="assets/avatar-placeholder.png" class="img-fluid rounded-circle" alt="Teacher" width="100">
+          <p>Teacher</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Courses</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Course</th>
+                <th>Session</th>
+                <th>Semester</th>
+                <th>Credit Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let course of teacher.coursesList; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ course.name }}</td>
+                <td>{{ course.session }}</td>
+                <td>{{ course.semester }}</td>
+                <td>{{ course.creditHours }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Teacher Assessment</h5>
+          <canvas id="pieChart"></canvas>
+          <p class="text-center mt-2">Weekly Based Assessment of Teacher for all courses of the semester</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Teacher Assessment</h5>
+          <canvas id="barChart"></canvas>
+          <p class="text-center mt-2">Weekly Based Assessment of teacher for all courses</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

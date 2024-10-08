@@ -9,7 +9,7 @@ interface Student {
   firstName: string;
   lastName: string;
   semester: string;
-  identificationNumber: string;
+  id: string;
   dateOfBirth: string;
   dateOfAdmission: string;
   degreeTitle: string;
@@ -25,10 +25,8 @@ interface Student {
 export class StudentComponent implements OnInit, OnDestroy {
   studentForm: FormGroup;
   students: Student[] = [];
-  semesters = [
-    'Semester 1', 'Semester 2', 'Semester 3', 'Semester 4',
-    'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8',
-  ];
+  semesters = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  years = ['2020-2024', '2021-2025', '2022-2026', '2023-2027'];
   degrees = [
     'Bachelor of Science in Electrical Engineering',
     'Bachelor of Science in Chemical Engineering',
@@ -39,6 +37,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     'Bachelor of Science in Computer Science (CS)',
     'Bachelor of Science in Information Technology Engineering',
   ];
+
   selectedFile: File | null = null;
   studentId: string | null = null;
   page = 1;
@@ -56,7 +55,7 @@ export class StudentComponent implements OnInit, OnDestroy {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       semester: ['', Validators.required],
-      identificationNumber: ['', Validators.required],
+      id: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       dateOfAdmission: ['', Validators.required],
       degreeTitle: ['', Validators.required],
@@ -66,13 +65,25 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.initializeSocket();
+    this.loadStudents();
+    this.route.paramMap.subscribe((params) => {
+      this.studentId = params.get('id');
+      if (this.studentId) {
+        this.getStudentDetails(this.studentId);
+      } else {
+        this.toastr.warning('No student ID found in route.', 'Warning');
+      }
+    });
+  }
+
+  private initializeSocket(): void {
     this.socket = io('http://localhost:3000'); // Change to your server URL
 
     this.socket.on('connect', () => {
       console.log('WebSocket connected');
     });
 
-    // Listen for WebSocket events
     this.socket.on('studentAdded', (student: Student) => {
       this.students.push(student);
       this.toastr.success('A new student has been added', 'Success');
@@ -80,7 +91,7 @@ export class StudentComponent implements OnInit, OnDestroy {
     });
 
     this.socket.on('studentUpdated', (updatedStudent: Student) => {
-      const index = this.students.findIndex(s => s.identificationNumber === updatedStudent.identificationNumber);
+      const index = this.students.findIndex(s => s.id === updatedStudent.id);
       if (index !== -1) {
         this.students[index] = updatedStudent; // Update the student in the array
         this.toastr.success('Student details updated', 'Success');
@@ -88,22 +99,15 @@ export class StudentComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.socket.on('studentDeleted', (identificationNumber: string) => {
-      this.students = this.students.filter(student => student.identificationNumber !== identificationNumber);
+    this.socket.on('studentDeleted', (id: string) => {
+      this.students = this.students.filter(student => student.id !== id);
       this.toastr.success('Student deleted successfully', 'Success');
-      console.log('Student deleted:', identificationNumber);
+      console.log('Student deleted:', id);
       this.checkAndDeleteAllPictures(); // Check and delete pictures if no students left
     });
-
-    // Load students initially
-    this.loadStudents();
-    this.studentId = this.route.snapshot.paramMap.get('id');
-    if (this.studentId) {
-      this.getStudentDetails(this.studentId);
-    }
   }
 
-  loadStudents() {
+  loadStudents(): void {
     this.http.get<Student[]>(`http://localhost:3000/api/students?page=${this.page}`).subscribe(
       (data) => {
         console.log('Students loaded:', data); // Log the response data
@@ -133,36 +137,40 @@ export class StudentComponent implements OnInit, OnDestroy {
   onFileChange(event: any): void {
     const file = event.target.files[0];
     this.selectedFile = file || null;
-    if (this.selectedFile) {
-      this.studentForm.get('uploadPicture')?.setErrors(null);
-    } else {
-      this.studentForm.get('uploadPicture')?.setErrors({ required: true });
-    }
+    this.studentForm.get('uploadPicture')?.setErrors(this.selectedFile ? null : { required: true });
   }
 
   onSubmit(): void {
-    this.studentForm.markAllAsTouched();
-
-    if (this.studentForm.valid) {
-      const identificationNumber = this.studentForm.value.identificationNumber;
-
-      this.http.get<any>(`http://localhost:3000/api/students/check/${identificationNumber}`).subscribe({
-        next: () => {
-          this.studentId ? this.updateStudent() : this.createStudent();
-        },
-        error: (err) => {
-          console.error('Error checking identification number:', err);
-          this.toastr.error('Error: ' + (err.error?.message || 'Unknown error'), 'Error');
-        },
-      });
+    if (this.studentForm.invalid) {
+      this.toastr.warning('Please fill out the form correctly before submitting.', 'Form Validation');
+      return;
     }
+
+    // Check for duplicate ID only when creating
+    if (!this.studentId) {
+      this.checkStudentId(this.studentForm.value.id);
+    } else {
+      this.updateStudent();
+    }
+  }
+
+  private checkStudentId(id: string): void {
+    this.http.get<any>(`http://localhost:3000/api/students/check/${id}`).subscribe({
+      next: () => {
+        this.createStudent();
+      },
+      error: (err) => {
+        this.toastr.error('Error: ' + (err.error?.message || 'Unknown error'), 'Error');
+      }
+    });
   }
 
   createStudent(): void {
     const formData = this.buildFormData();
+    console.log('FormData being sent:', formData); // Log FormData
 
     this.http.post<any>('http://localhost:3000/api/students', formData).subscribe({
-      next: () => {
+      next: (response) => {
         this.toastr.success('Student added successfully', 'Success');
         this.resetForm();
       },
@@ -175,9 +183,10 @@ export class StudentComponent implements OnInit, OnDestroy {
 
   updateStudent(): void {
     const formData = this.buildFormData();
+    console.log('Updating student with FormData:', formData); // Log FormData
 
     this.http.put<any>(`http://localhost:3000/api/students/${this.studentId}`, formData).subscribe({
-      next: () => {
+      next: (response) => {
         this.toastr.success('Student updated successfully', 'Success');
         this.resetForm();
       },
@@ -191,12 +200,8 @@ export class StudentComponent implements OnInit, OnDestroy {
   deleteStudent(id: string): void {
     this.http.delete<any>(`http://localhost:3000/api/students/${id}`).subscribe({
       next: () => {
-        // Emit the deletion via WebSocket (if applicable)
         this.socket.emit('studentDeleted', id); // Notify others about the deletion
-
-        // Remove the student from the local array immediately
-        this.students = this.students.filter(student => student.identificationNumber !== id);
-
+        this.students = this.students.filter(student => student.id !== id);
         this.toastr.success('Student deleted successfully', 'Success');
         this.checkAndDeleteAllPictures(); // Check and delete pictures if no students left
       },

@@ -17,6 +17,9 @@
           <th>Identification Number</th>
           <th>Semester</th>
           <th>Degree</th>
+          <th>Year of Study</th>
+          <th>Date of Birth</th>
+          <th>Date of Admission</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -31,12 +34,15 @@
             <span *ngIf="!student.uploadPicture">No Image</span>
           </td>
           <td>{{ student.firstName }} {{ student.lastName }}</td>
-          <td>{{ student.identificationNumber }}</td>
+          <td>{{ student.id }}</td>
           <td>{{ student.semester }}</td>
           <td>{{ student.degreeTitle }}</td>
+          <td>{{ student.yearOfStudy }}</td> <!-- Added Year of Study -->
+          <td>{{ student.dateOfBirth | date:'shortDate' }}</td> <!-- Added Date of Birth -->
+          <td>{{ student.dateOfAdmission | date:'shortDate' }}</td> <!-- Added Date of Admission -->
           <td>
             <div class="d-flex justify-content-center">
-              <button (click)="deleteStudent(student.identificationNumber)"
+              <button (click)="deleteStudent(student.id)"
                       class="btn btn-danger btn-sm"
                       title="Delete">
                 <i class="fas fa-trash"></i>
@@ -57,8 +63,7 @@
           <div class="form-group" *ngFor="let field of [
             {name: 'firstName', label: 'First Name'},
             {name: 'lastName', label: 'Last Name'},
-            {name: 'identificationNumber', label: 'Identification Number'},
-            {name: 'yearOfStudy', label: 'Year of Study'}
+            {name: 'id', label: 'Identification Number'}
           ]">
             <label [for]="field.name">{{ field.label }}</label>
             <input type="text"
@@ -67,6 +72,18 @@
                    class="form-control"
                    placeholder="Enter {{ field.label.toLowerCase() }}" />
             <div *ngIf="studentForm.get(field.name)?.invalid && studentForm.get(field.name)?.touched" class="text-danger">
+              This field is required.
+            </div>
+          </div>
+
+          <!-- Year of Study Dropdown -->
+          <div class="form-group">
+            <label for="yearOfStudy" class="text-success">Year of Study</label>
+            <select formControlName="yearOfStudy" id="yearOfStudy" class="form-select">
+              <option value="">Select Year</option>
+              <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+            </select>
+            <div *ngIf="studentForm.get('yearOfStudy')?.invalid && studentForm.get('yearOfStudy')?.touched" class="text-danger">
               This field is required.
             </div>
           </div>

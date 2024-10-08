@@ -6,7 +6,7 @@ const {
     getStudentById,
     updateStudent,
     deleteStudent,
-    checkIdentificationNumberExists
+    checkidExists
 } = require('../controllers/studentController');
 
 const router = express.Router();
@@ -31,7 +31,7 @@ const setupSocketIO = (io) => {
     router.get('/:id', getStudentById);
     router.put('/:id', upload.single('uploadPicture'), (req, res) => updateStudent(req, res, io));
     router.delete('/:id', (req, res) => deleteStudent(req, res, io));
-    router.get('/check/:id', checkIdentificationNumberExists);
+    router.get('/check/:id', checkidExists);
 
     return router;
 };
