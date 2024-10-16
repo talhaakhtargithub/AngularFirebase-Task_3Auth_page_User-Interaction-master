@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 interface Teacher {
   firstName: string;
   lastName: string;
-  cnic: string;
+  id: string;
   semester: string;
   courses: string[];
   uploadPicture: string | null;
@@ -51,7 +51,7 @@ export class TeacherComponent implements OnInit {
     this.teacherForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      cnic: ['', [Validators.required, Validators.maxLength(13), Validators.pattern(/^\d{13}$/)]],
+      id: ['', Validators.required, ],
       semester: ['', Validators.required],
       courses: [[], Validators.required], // Initialize as an array
       uploadPicture: [null,Validators.required]
@@ -95,10 +95,10 @@ export class TeacherComponent implements OnInit {
     });
 
     // Listen for teacherDeleted event
-    this.socket.fromEvent<string>('teacherDeleted').subscribe((cnic) => {
-      this.teachers = this.teachers.filter(teacher => teacher.cnic !== cnic); // Remove the deleted teacher
+    this.socket.fromEvent<string>('teacherDeleted').subscribe((id) => {
+      this.teachers = this.teachers.filter(teacher => teacher.id !== id); // Remove the deleted teacher
       this.toastr.success('Teacher deleted successfully!'); // Show success toast
-      console.log('Teacher deleted via socket:', cnic);
+      console.log('Teacher deleted via socket:', id);
     });
   }
 
@@ -128,7 +128,7 @@ export class TeacherComponent implements OnInit {
     const formData = new FormData();
     formData.append('firstName', this.teacherForm.get('firstName')?.value);
     formData.append('lastName', this.teacherForm.get('lastName')?.value);
-    formData.append('cnic', this.teacherForm.get('cnic')?.value);
+    formData.append('id', this.teacherForm.get('id')?.value);
     formData.append('semester', this.teacherForm.get('semester')?.value);
     formData.append('courses', JSON.stringify(this.teacherForm.get('courses')?.value));
     if (this.teacherForm.get('uploadPicture')?.value) {
@@ -166,9 +166,9 @@ export class TeacherComponent implements OnInit {
     this.resetForm();
   }
 
-  deleteTeacher(cnic: string): void {
+  deleteTeacher(id: string): void {
     if (confirm('Are you sure you want to delete this teacher?')) {
-      this.http.delete(`http://localhost:3000/api/teachers/${cnic}`)
+      this.http.delete(`http://localhost:3000/api/teachers/${id}`)
         .subscribe({
           next: () => {
             this.toastr.success('Teacher deleted successfully!'); // Show success toast

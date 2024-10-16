@@ -1,16 +1,22 @@
 <div class="dashboard">
+  <h1>Dashboard</h1>
+
   <div class="filter-section">
-    <select [(ngModel)]="selectedSession" class="filter-select">
+    <!-- Session Selection -->
+    <select [(ngModel)]="selectedSession" class="filter-select col-md-5">
+      <option value="" disabled selected>Select Session</option>
       <option *ngFor="let session of sessions" [value]="session">{{ session }}</option>
     </select>
-    <select [(ngModel)]="selectedCourse" class="filter-select">
-      <option *ngFor="let course of courses" [value]="course.code">{{ course.title }}</option>
-    </select>
-    <select [(ngModel)]="selectedTime" class="filter-select">
+
+    <!-- Time Selection -->
+    <select [(ngModel)]="selectedTime" class="filter-select col-md-5">
+      <option value="" disabled selected>Select Time</option>
       <option value="week">Week</option>
       <option value="month">Month</option>
       <option value="year">Year</option>
     </select>
+
+    <!-- Filter Button -->
     <button (click)="applyFilter()" class="filter-button">Filter</button>
   </div>
 
@@ -58,7 +64,6 @@
           [type]="emotionChartType">
         </canvas>
       </div>
-
     </div>
 
     <!-- Individual Student Assessment -->

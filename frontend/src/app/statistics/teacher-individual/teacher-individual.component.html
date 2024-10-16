@@ -1,89 +1,101 @@
-<div class="container my-4">
+<div class="container-fluid d-flex flex-column vh-100 my-4">
+  <!-- Filter Section -->
   <div class="row mb-3">
-    <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Enter Name">
+    <div class="col-md-3 col-sm-12 mb-2">
+      <input type="text" class="form-control" placeholder="Enter ID" [(ngModel)]="teacherId" (ngModelChange)="onTeacherIdInput($event)" />
     </div>
-    <div class="col-md-3">
-      <input type="text" class="form-control" placeholder="Enter ID">
-    </div>
-    <div class="col-md-3">
-      <select class="form-control">
-        <option>Select Time Category</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <button class="btn btn-primary w-100">Filter</button>
+
+    <div class="col-md-3 col-sm-12 mb-2">
+      <button class="btn btn-primary w-100" (click)="filterTeacherData(teacherId)">Filter</button>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Teacher Details</h5>
-          <p>Name: {{ teacher.name }}</p>
-          <p>ID: {{ teacher.id }}</p>
-          <p>No. of Semesters Teaching: {{ teacher.semesters }}</p>
-          <p>No. of Courses Teaching: {{ teacher.courses }}</p>
+  <!-- Teacher Details Section -->
+  <div class="row mb-3 flex-grow-1">
+    <div class="col-lg-6 col-md-12 mb-4">
+      <div class="card h-100">
+        <div class="row g-0">
+          <div class="col-lg-8">
+            <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+              <h5 class="card-title fw-bold mb-4">Teacher Details</h5>
+              <p class="mb-1"><strong>Name:</strong> {{ teacher.firstName }} {{ teacher.lastName }}</p>
+              <p class="mb-1"><strong>ID:</strong> {{ teacher.id }}</p>
+              <!-- <p class="mb-1"><strong>Semester Teaching:</strong> {{ teacher.semester }}</p> -->
+              <p class="mb-1"><strong>Courses Teaching:</strong> {{ teacher.courses?.join(', ') || 'No courses available' }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 d-flex align-items-center justify-content-center mt-4 mb-4">
+            <div class="text-center">
+              <img *ngIf="teacher.uploadPicture"
+                   [src]="'http://localhost:3000/uploads/' + teacher.uploadPicture"
+                   alt="{{ teacher.firstName || 'Teacher Profile Picture' }}"
+                   class="img-thumbnail"
+                   style="width: 200px; height: 200px;">
+              <span *ngIf="!teacher.uploadPicture" class="text-muted">
+                <img src="https://placehold.co/200x200/" alt="Placeholder for missing image" style="width: 200px; height: 200px;">
+              </span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
 
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-body text-center">
-          <img src="assets/avatar-placeholder.png" class="img-fluid rounded-circle" alt="Teacher" width="100">
-          <p>Teacher</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card">
+    <!-- Courses Section -->
+    <div class="col-md-6 col-sm-12 mb-2 flex-grow-1">
+      <div class="card h-100 student-individual-card flex-grow-1">
         <div class="card-body">
           <h5 class="card-title">Courses</h5>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Course</th>
-                <th>Session</th>
-                <th>Semester</th>
-                <th>Credit Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let course of teacher.coursesList; let i = index">
-                <td>{{ i + 1 }}</td>
-                <td>{{ course.name }}</td>
-                <td>{{ course.session }}</td>
-                <td>{{ course.semester }}</td>
-                <td>{{ course.creditHours }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Course</th>
+                  <th>Session</th>
+                  <th>Semester</th>
+                  <th>Credit Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let course of teacher.coursesList; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ course.name }}</td>
+                  <td>{{ course.session }}</td>
+                  <td>{{ course.semester }}</td>
+                  <td>{{ course.creditHours }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Charts Section -->
-  <div class="row mt-3">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
+  <div class="row flex-grow-1">
+    <div class="col-md-6 col-sm-12 mb-2">
+      <div class="card flex-grow-1">
+        <div class="card-body text-center">
           <h5 class="card-title">Teacher Assessment</h5>
-          <canvas id="pieChart"></canvas>
-          <p class="text-center mt-2">Weekly Based Assessment of Teacher for all courses of the semester</p>
+          <canvas baseChart
+                  [data]="assessmentData"
+                  [type]="'doughnut'"
+                  class="chart-canvas">
+          </canvas>
+          <p class="mt-2">
+            Weekly Based Assessment of Teacher for all courses of the semester
+          </p>
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="card">
+    <div class="col-md-6 col-sm-12 mb-2">
+      <div class=" flex-grow-1">
         <div class="card-body">
-          <h5 class="card-title">Teacher Assessment</h5>
-          <canvas id="barChart"></canvas>
+          <h5 class="card-title">Teacher Attendance</h5>
+          <canvas baseChart [data]="attendanceData" [type]="'bar'" class="chart-canvas"></canvas>
           <p class="text-center mt-2">Weekly Based Assessment of teacher for all courses</p>
         </div>
       </div>

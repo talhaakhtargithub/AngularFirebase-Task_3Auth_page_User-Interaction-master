@@ -2,12 +2,12 @@ const Teacher = require('../models/Teacher');
 
 // Create or update a teacher
 exports.createOrUpdateTeacher = async (req, res) => {
-    const { firstName, lastName, cnic, semester, courses } = req.body;
+    const { firstName, lastName, id, semester, courses } = req.body;
     const uploadPicture = req.file ? req.file.filename : null;
 
     try {
         // Check if teacher exists
-        let teacher = await Teacher.findOne({ cnic });
+        let teacher = await Teacher.findOne({ id });
 
         if (teacher) {
             // Update existing teacher
@@ -24,7 +24,7 @@ exports.createOrUpdateTeacher = async (req, res) => {
             const newTeacher = new Teacher({
                 firstName,
                 lastName,
-                cnic,
+                id,
                 semester,
                 courses: JSON.parse(courses),
                 uploadPicture,
@@ -50,10 +50,10 @@ exports.getAllTeachers = async (req, res) => {
     }
 };
 
-// Get a teacher by CNIC
-exports.getTeacherByCnic = async (req, res) => {
+// Get a teacher by id
+exports.getTeacherByid = async (req, res) => {
     try {
-        const teacher = await Teacher.findOne({ cnic: req.params.cnic });
+        const teacher = await Teacher.findOne({ id: req.params.id });
         if (!teacher) return res.status(404).json({ message: 'Teacher not found' });
         res.json(teacher);
     } catch (error) {
@@ -62,14 +62,14 @@ exports.getTeacherByCnic = async (req, res) => {
     }
 };
 
-// Update a teacher by CNIC
-exports.updateTeacherByCnic = async (req, res) => {
+// Update a teacher by id
+exports.updateTeacherByid = async (req, res) => {
     const { firstName, lastName, semester, courses } = req.body;
     const uploadPicture = req.file ? req.file.filename : null;
 
     try {
         const updatedTeacher = await Teacher.findOneAndUpdate(
-            { cnic: req.params.cnic },
+            { id: req.params.id },
             { firstName, lastName, semester, courses: JSON.parse(courses), uploadPicture },
             { new: true }
         );
@@ -82,11 +82,11 @@ exports.updateTeacherByCnic = async (req, res) => {
     }
 };
 
-// Delete a teacher by CNIC
+// Delete a teacher by id
 exports.deleteTeacher = async (req, res) => {
     try {
-        const { cnic } = req.params;
-        const result = await Teacher.findOneAndDelete({ cnic });
+        const { id } = req.params;
+        const result = await Teacher.findOneAndDelete({ id });
 
         if (!result) {
             return res.status(404).json({ message: 'Teacher not found!' });
@@ -99,14 +99,14 @@ exports.deleteTeacher = async (req, res) => {
     }
 };
 
-// Check if CNIC exists
-exports.checkCnicExists = async (req, res) => {
+// Check if id exists
+exports.checkidExists = async (req, res) => {
     try {
-        const teacher = await Teacher.findOne({ cnic: req.params.cnic });
-        if (teacher) return res.status(400).json({ message: 'CNIC already exists' });
-        res.json({ message: 'CNIC is available' });
+        const teacher = await Teacher.findOne({ id: req.params.id });
+        if (teacher) return res.status(400).json({ message: 'id already exists' });
+        res.json({ message: 'id is available' });
     } catch (error) {
-        console.error('Error checking CNIC:', error);
+        console.error('Error checking id:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

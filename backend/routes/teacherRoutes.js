@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrUpdateTeacher, getAllTeachers, getTeacherByCnic, updateTeacherByCnic, deleteTeacher, checkCnicExists } = require('../controllers/teacherController');
+const { createOrUpdateTeacher, getAllTeachers, getTeacherByid, updateTeacherByid, deleteTeacher, checkidExists } = require('../controllers/teacherController');
 const multer = require('multer');
 const path = require('path');
 
@@ -18,9 +18,9 @@ const upload = multer({ storage });
 // Routes
 router.post('/', upload.single('uploadPicture'), createOrUpdateTeacher);
 router.get('/', getAllTeachers);
-router.get('/:cnic', getTeacherByCnic);
-router.put('/:cnic', upload.single('uploadPicture'), updateTeacherByCnic);
-router.delete('/:cnic', deleteTeacher);
-router.get('/check/:cnic', checkCnicExists);
+router.get('/:id', getTeacherByid);
+router.put('/:id', upload.single('uploadPicture'), updateTeacherByid);
+router.delete('/:id', deleteTeacher);
+router.get('/check/:id', checkidExists);
 
 module.exports = router;

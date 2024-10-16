@@ -12,14 +12,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 export class DashboardComponent implements OnInit {
   loading: boolean = true;
   sessions: String[] = [
-    'Semester 1',
-    'Semester 2',
-    'Semester 3',
-    'Semester 4',
-    'Semester 5',
-    'Semester 6',
-    'Semester 7',
-    'Semester 8'
+    '2020-2024', '2021-2025', '2022-2026', '2023-2027'
   ];
 
   // Student Attendance Data
@@ -63,10 +56,9 @@ export class DashboardComponent implements OnInit {
   public students: any[] = [];
   public courses: any[] = [];
   selectedSession: string = '';
-  selectedCourse: string = '';
   selectedTime: 'week' | 'month' | 'year' = 'week';
 
-  constructor(private http: HttpClient,private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadCourses();
@@ -77,10 +69,6 @@ export class DashboardComponent implements OnInit {
     this.http.get<any[]>('http://localhost:3000/api/courses').subscribe(
       courses => {
         this.courses = courses;
-        if (courses.length > 0) {
-          this.selectedCourse = courses[0]?.code || '';
-          this.applyFilter();
-        }
         this.toastr.success('Courses loaded successfully!'); // Success message
       },
       error => {
@@ -96,8 +84,8 @@ export class DashboardComponent implements OnInit {
   }
 
   applyFilter(): void {
-    if (this.selectedSession && this.selectedCourse) {
-      this.http.get<any[]>(`http://localhost:3000/realstudents?session=${this.selectedSession}&course=${this.selectedCourse}&time=${this.selectedTime}`).subscribe(
+    if (this.selectedSession) {
+      this.http.get<any[]>(`http://localhost:3000/realstudents?session=${this.selectedSession}&time=${this.selectedTime}`).subscribe(
         studentData => {
           const uniqueStudents = this.getUniqueStudentsById(studentData);
           uniqueStudents.sort((a, b) => a.id - b.id);
@@ -119,6 +107,7 @@ export class DashboardComponent implements OnInit {
       );
     }
   }
+
   uniqueIDs: string[] = [];
 
   getUniqueIDs(): Observable<string[]> {
@@ -141,12 +130,14 @@ export class DashboardComponent implements OnInit {
       next: (uniqueIDs) => {
         this.http.get<any[]>(`http://localhost:3000/realteachers`).subscribe(
           teacherData => {
+            const uniqueStudents = this.getUniqueStudentsById(teacherData); // Call the uniqueStudents function
+
             const attendanceCounts: { [key: string]: number } = {};
             const days: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-            teacherData.forEach(teacher => {
-              const day = new Date(teacher.Time).toLocaleDateString('en-US', { weekday: 'short' });
-              attendanceCounts[day] = (attendanceCounts[day] || 0) + (teacher.Attendance_Status === 'Present' ? 1 : 0);
+            uniqueStudents.forEach(student => {
+              const day = new Date(student.Time).toLocaleDateString('en-US', { weekday: 'short' });
+              attendanceCounts[day] = (attendanceCounts[day] || 0) + (student.Attendance_Status === 'Present' ? 1 : 0);
             });
 
             const counts = days.map(day => attendanceCounts[day] || 0);
@@ -172,7 +163,6 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-
 
   updateEmotionData(): void {
     this.http.get<any[]>('http://localhost:3000/realstudents').subscribe(
@@ -210,62 +200,43 @@ export class DashboardComponent implements OnInit {
     );
   }
 
+  getAttendancePercentage(studentId: number, studentData: any[]): string {
+    const attendanceMap = new Map<string, { status: string }>();
 
-
-
-// Helper function to calculate attendance percentage based on unique records
-getAttendancePercentage(studentId: number, studentData: any[]): string {
-  // Create a map to track attendance records by date for the specific student
-  const attendanceMap = new Map<string, { status: string }>();
-
-  studentData.forEach(record => {
-    if (record.id === studentId) {
-      const date = new Date(record.Time).toISOString().split('T')[0]; // Get the date part only
-
-      // If the date is not already present, add it
-      if (!attendanceMap.has(date)) {
-        attendanceMap.set(date, { status: record.Attendance_status });
+    studentData.forEach(record => {
+      if (record.id === studentId) {
+        const date = new Date(record.Time).toISOString().split('T')[0];
+        if (!attendanceMap.has(date)) {
+          attendanceMap.set(date, { status: record.Attendance_status });
+        }
       }
-    }
-  });
+    });
 
-  // Count unique present days and total days
-  let uniquePresentDays = 0;
-  const totalUniqueDays = attendanceMap.size;
+    let uniquePresentDays = 0;
+    const totalUniqueDays = attendanceMap.size;
 
-  attendanceMap.forEach(entry => {
-    if (entry.status === 'Present') {
-      uniquePresentDays++;
-    }
-  });
+    attendanceMap.forEach(entry => {
+      if (entry.status === 'Present') {
+        uniquePresentDays++;
+      }
+    });
 
-  // Calculate attendance percentage
-  const attendancePercentage = totalUniqueDays > 0
-    ? (uniquePresentDays / totalUniqueDays) * 100
-    : 0;
+    const attendancePercentage = totalUniqueDays > 0
+      ? (uniquePresentDays / totalUniqueDays) * 100
+      : 0;
 
-  return `${attendancePercentage.toFixed(2)}%`; // Return formatted percentage
-}
-
-
-
+    return `${attendancePercentage.toFixed(2)}%`;
+  }
 
   private getUniqueStudentsById(students: any[]): any[] {
     const unique = new Map<number, any>();
-
     students.forEach(student => {
       if (!unique.has(student.id)) {
         unique.set(student.id, student);
       }
     });
-
     return Array.from(unique.values());
   }
-
-
-
-
-
 
   processStudentAttendanceData(studentData: any[]): void {
     const attendanceCounts: { [key: string]: number } = {};
@@ -282,59 +253,17 @@ getAttendancePercentage(studentId: number, studentData: any[]): string {
       labels: days,
       datasets: [{ data: counts, label: 'Student Attendance' }]
     };
+
+    this.updateTeacherAttendance();
   }
-
-
 
   updateCourseAssessment(): void {
-// Assuming your data is structured like this:
-interface AttendanceData {
-  datasets: {
-      data: (number | [number, number] | null)[]; // Allow tuples and null values
-  }[];
-}
-
-// Get the data safely
-const studentData: (number | [number, number] | null)[] | undefined = this.studentAttendanceData?.datasets?.[0]?.data;
-const teacherData: (number | [number, number] | null)[] | undefined = this.teacherAttendanceData?.datasets?.[0]?.data;
-
-// Calculate student attendance
-const studentAttendance = studentData && studentData.length > 0
-  ? studentData.reduce((a: number, b: number | [number, number] | null) => {
-      if (Array.isArray(b)) {
-          return a + b.reduce((x, y) => x + y, 0); // Sum the tuple values
-      }
-      return a + (b ?? 0); // Sum if b is number or default to 0
-  }, 0) / studentData.length
-  : 0;
-
-// Calculate teacher attendance
-const teacherAttendance = teacherData && teacherData.length > 0
-  ? teacherData.reduce((a: number, b: number | [number, number] | null) => {
-      if (Array.isArray(b)) {
-          return a + b.reduce((x, y) => x + y, 0); // Sum the tuple values
-      }
-      return a + (b ?? 0); // Sum if b is number or default to 0
-  }, 0) / teacherData.length
-  : 0;
-
-    const focused = this.emotionPercentages['Focused'];
-    const nonSerious = this.emotionPercentages['Non-serious'];
-    const demotivated = this.emotionPercentages['Demotivated'];
-
-    // Calculate emotion score
-    const emotionScore = (focused * 1.0) + (nonSerious * 0.5) + (demotivated * 0);
-
-    // Calculate course assessment
-    const courseAssessment = (studentAttendance * 0.4) + (teacherAttendance * 0.3) + (emotionScore * 0.3);
-
-    // Update the chart
     this.courseAssessmentData = {
       labels: ['Course Assessment'],
-      datasets: [{ data: [courseAssessment, 100 - courseAssessment], backgroundColor: ['#42A5F5', '#EBEFF2'] }]
+      datasets: [{
+        data: [this.teacherAttendanceData.datasets[0].data.length, 100 - this.teacherAttendanceData.datasets[0].data.length],
+        backgroundColor: ['#42A5F5', '#EBEFF2']
+      }]
     };
   }
-
-
 }
-

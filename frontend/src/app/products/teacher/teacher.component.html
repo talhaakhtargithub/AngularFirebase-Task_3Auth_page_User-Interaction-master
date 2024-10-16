@@ -1,5 +1,26 @@
+<div class="row">
+  <div class="col-auto">
+    <div class="card text-success">
+      <div class="card-body">
+        <h1>
+          <a routerLinkActive="true" routerLink="/products/student" class="text-success">Student Database</a>
+        </h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-auto">
+    <div class="card text-success">
+      <div class="card-body">
+        <h1>
+          <a routerLinkActive="true" routerLink="/products/teacher" class="text-success">Teacher Database</a>
+        </h1>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="teacher-container mt-4">
-  <h1 class="text-center text-success">Teacher Database</h1>
 
   <div class="d-flex justify-content-between align-items-center mb-4">
     <button class="btn btn-success" (click)="toggleView()">
@@ -13,8 +34,8 @@
         <tr>
           <th>Picture</th>
           <th>Full Name</th>
-          <th>CNIC</th>
-          <th>Semester</th>
+          <th>Id</th>
+          <!-- <th>Semester</th> -->
           <th>Courses</th>
           <th>Actions</th>
         </tr>
@@ -30,12 +51,12 @@
             <span *ngIf="!teacher.uploadPicture">No Image</span>
           </td>
           <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
-          <td>{{ teacher.cnic }}</td>
-          <td>{{ teacher.semester }}</td>
+          <td>{{ teacher.id }}</td>
+          <!-- <td>{{ teacher.semester }}</td> -->
           <td>{{ teacher.courses.join(', ') }}</td>
           <td>
             <div class="d-flex justify-content-center">
-              <button (click)="deleteTeacher(teacher.cnic)" class="btn btn-danger btn-sm" title="Delete">
+              <button (click)="deleteTeacher(teacher.id)" class="btn btn-danger btn-sm" title="Delete">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
@@ -65,17 +86,12 @@
       </div>
 
       <div class="mb-3">
-        <label for="cnic" class="text-success">CNIC</label>
-        <input type="text" id="cnic" formControlName="cnic" class="form-control" placeholder="Enter 13-digit CNIC" required />
-        <div *ngIf="teacherForm.get('cnic')?.errors?.['required']">
-          <small class="text-danger">CNIC is required.</small>
+        <label for="id" class="text-success">Id</label>
+        <input type="text" id="id" formControlName="id" class="form-control" placeholder="Enter Id" required />
+        <div *ngIf="teacherForm.get('id')?.errors?.['required']">
+          <small class="text-danger">Id is required.</small>
         </div>
-        <div *ngIf="teacherForm.get('cnic')?.errors?.['maxlength']">
-          <small class="text-danger">CNIC must be 13 digits.</small>
-        </div>
-        <div *ngIf="teacherForm.get('cnic')?.errors?.['pattern']">
-          <small class="text-danger">CNIC must be numeric.</small>
-        </div>
+
       </div>
 
       <div class="mb-3">

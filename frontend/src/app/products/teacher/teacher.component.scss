@@ -120,3 +120,7 @@
     white-space: nowrap; /* Prevents text from wrapping */
   }
 }
+.text-success a {
+  color: #28a745;
+  text-decoration: none; /* This is the green color used by Bootstrap for text-success */
+}
