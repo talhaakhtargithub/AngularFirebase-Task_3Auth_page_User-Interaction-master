@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ChartData } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -43,6 +43,37 @@ export class TeacherIndividualComponent implements OnInit {
         data: []
       }
     ]
+  };
+
+  chartOptions: ChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          generateLabels: (chart) => {
+            const data = chart.data.datasets[0].data;
+            const labels = chart.data.labels || [];
+            const total = data.reduce((acc: number, curr: any) => {
+              // Ensure the value is treated as a number
+              return acc + (typeof curr === 'number' ? curr : 0);
+            }, 0);
+
+            return labels.map((label, i) => {
+              const value = data[i];
+              // Ensure value is a number before performing arithmetic
+              const numericValue = typeof value === 'number' ? value : 0;
+              const percentage = total > 0 ? ((numericValue / total) * 100).toFixed(2) : '0';  // Calculate percentage
+              return {
+                text: `${label}: ${percentage}%`,  // Display percentage next to the label
+                fillStyle: chart.data.datasets[0].backgroundColor instanceof Array
+                          ? (chart.data.datasets[0].backgroundColor as string[])[i]
+                          : '#000000',  // Ensure we access the color from the array
+              };
+            });
+          },
+        },
+      },
+    },
   };
 
 // Define the structure for assessmentData without predefined labels

@@ -83,30 +83,64 @@ export class DashboardComponent implements OnInit {
     this.updateEmotionData();
   }
 
-  applyFilter(): void {
-    if (this.selectedSession) {
-      this.http.get<any[]>(`http://localhost:3000/realstudents?session=${this.selectedSession}&time=${this.selectedTime}`).subscribe(
-        studentData => {
-          const uniqueStudents = this.getUniqueStudentsById(studentData);
-          uniqueStudents.sort((a, b) => a.id - b.id);
-          this.processStudentAttendanceData(uniqueStudents);
-          this.updateTeacherAttendance();
+  private lastExecuted: number = 0;
 
-          this.students = uniqueStudents.map(student => ({
-            name: student.Name,
-            id: student.id,
-            semester: student.Semester,
-            attendance: this.getAttendancePercentage(student.id, studentData)
-          }));
-          this.toastr.info('Filter applied successfully!'); // Informational message
-        },
-        error => {
-          console.error('Error loading student data:', error);
-          this.toastr.error('Failed to load student data. Please try again.'); // Error message
-        }
-      );
-    }
+  applyFilter(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const currentTime = Date.now();
+
+      // Check if 5 minutes have passed since the last execution
+      if (currentTime - this.lastExecuted <  60*1000 ) {
+        console.log('The filter was recently applied. Try again after 5 minutes.');
+        resolve(false);  // Reject if the function was called too soon
+        return;
+      }
+
+      if (this.selectedSession) {
+        this.http.get<any[]>(`http://localhost:3000/realstudents?session=${this.selectedSession}&time=${this.selectedTime}`).subscribe(
+          studentData => {
+            const uniqueStudents = this.getUniqueStudentsById(studentData);
+            uniqueStudents.sort((a, b) => a.id - b.id);
+
+            // Process student attendance data and update teacher attendance and emotion data
+            this.processStudentAttendanceData(uniqueStudents);
+            this.updateTeacherAttendance();
+            this.updateEmotionData();
+
+            // Map student data to display
+            this.students = uniqueStudents.map(student => ({
+              name: student.Name,
+              id: student.id,
+              semester: student.Semester,
+              attendance: this.getAttendancePercentage(student.id, studentData)
+            }));
+
+            // Informational message after filter is applied
+            this.toastr.info('Filter applied successfully!');
+
+            // Update the timestamp to mark the last execution
+            this.lastExecuted = currentTime;
+
+            // Resolve with true to indicate the filter was applied successfully
+            resolve(true);
+          },
+          error => {
+            // Error handling in case of a failed HTTP request
+            console.error('Error loading student data:', error);
+            this.toastr.error('Failed to load student data. Please try again.');
+
+            // Reject the promise in case of an error
+            resolve(false);
+          }
+        );
+      } else {
+        // If no session is selected, resolve with false
+        resolve(false);
+      }
+    });
   }
+
+
 
   uniqueIDs: string[] = [];
 
@@ -165,40 +199,45 @@ export class DashboardComponent implements OnInit {
   }
 
   updateEmotionData(): void {
-    this.http.get<any[]>('http://localhost:3000/realstudents').subscribe(
-      students => {
-        let focusedCount = 0;
-        let nonSeriousCount = 0;
-        let demotivatedCount = 0;
+    this.applyFilter().then((filterApplied) => {
+      if (filterApplied) {
+        this.http.get<any[]>('http://localhost:3000/realstudents').subscribe(
+          students => {
+            let focusedCount = 0;
+            let nonSeriousCount = 0;
+            let demotivatedCount = 0;
 
-        students.forEach(student => {
-          focusedCount += student.Focused;
-          nonSeriousCount += student.Non_Serious;
-          demotivatedCount += student.Demotivated;
-        });
+            students.forEach(student => {
+              focusedCount += student.Focused;
+              nonSeriousCount += student.Non_Serious;
+              demotivatedCount += student.Demotivated;
+            });
 
-        const totalEmotions = focusedCount + nonSeriousCount + demotivatedCount;
+            const totalEmotions = focusedCount + nonSeriousCount + demotivatedCount;
 
-        this.emotionData = {
-          labels: ['Focused', 'Non-serious', 'Demotivated'],
-          datasets: [{
-            data: [focusedCount, nonSeriousCount, demotivatedCount],
-            backgroundColor: ['#42A5F5', '#FF6384', '#FF9F40']
-          }]
-        };
+            this.emotionData = {
+              labels: ['Focused', 'Non-serious', 'Demotivated'],
+              datasets: [{
+                data: [focusedCount, nonSeriousCount, demotivatedCount],
+                backgroundColor: ['#42A5F5', '#FF6384', '#FF9F40']
+              }]
+            };
 
-        this.emotionPercentages['Focused'] = totalEmotions ? Math.round((focusedCount / totalEmotions) * 100) : 0;
-        this.emotionPercentages['Non-serious'] = totalEmotions ? Math.round((nonSeriousCount / totalEmotions) * 100) : 0;
-        this.emotionPercentages['Demotivated'] = totalEmotions ? Math.round((demotivatedCount / totalEmotions) * 100) : 0;
+            this.emotionPercentages['Focused'] = totalEmotions ? Math.round((focusedCount / totalEmotions) * 100) : 0;
+            this.emotionPercentages['Non-serious'] = totalEmotions ? Math.round((nonSeriousCount / totalEmotions) * 100) : 0;
+            this.emotionPercentages['Demotivated'] = totalEmotions ? Math.round((demotivatedCount / totalEmotions) * 100) : 0;
 
-        this.toastr.success('Emotion data updated successfully!'); // Success message
-      },
-      error => {
-        console.error('Error updating emotion data:', error);
-        this.toastr.error('Failed to update emotion data. Please try again.'); // Error message
+            this.toastr.success('Emotion data updated successfully!'); // Success message
+          },
+          error => {
+            console.error('Error updating emotion data:', error);
+            this.toastr.error('Failed to update emotion data. Please try again.'); // Error message
+          }
+        );
       }
-    );
+    });
   }
+
 
   getAttendancePercentage(studentId: number, studentData: any[]): string {
     const attendanceMap = new Map<string, { status: string }>();

@@ -20,7 +20,6 @@
               <h5 class="card-title fw-bold mb-4">Teacher Details</h5>
               <p class="mb-1"><strong>Name:</strong> {{ teacher.firstName }} {{ teacher.lastName }}</p>
               <p class="mb-1"><strong>ID:</strong> {{ teacher.id }}</p>
-              <!-- <p class="mb-1"><strong>Semester Teaching:</strong> {{ teacher.semester }}</p> -->
               <p class="mb-1"><strong>Courses Teaching:</strong> {{ teacher.courses?.join(', ') || 'No courses available' }}</p>
             </div>
           </div>
@@ -36,14 +35,13 @@
               </span>
             </div>
           </div>
-
         </div>
       </div>
     </div>
 
     <!-- Courses Section -->
     <div class="col-md-6 col-sm-12 mb-2 flex-grow-1">
-      <div class="card h-100 student-individual-card flex-grow-1">
+      <div class="card h-100">
         <div class="card-body">
           <h5 class="card-title">Courses</h5>
           <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
@@ -74,31 +72,37 @@
   </div>
 
   <!-- Charts Section -->
-  <div class="row flex-grow-1">
-    <div class="col-md-6 col-sm-12 mb-2">
-      <div class="card flex-grow-1">
-        <div class="card-body text-center">
-          <h5 class="card-title">Teacher Assessment</h5>
+  <div class="row flex-grow-1 g-3">
+    <!-- Teacher Assessment (Doughnut Chart) -->
+    <div class="col-lg-6 col-md-12">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column align-items-center">
+          <h5 class="card-title text-center mb-4">Teacher Assessment</h5>
           <canvas baseChart
                   [data]="assessmentData"
                   [type]="'doughnut'"
-                  class="chart-canvas">
-          </canvas>
-          <p class="mt-2">
-            Weekly Based Assessment of Teacher for all courses of the semester
-          </p>
+
+                  class="chart-canvas"></canvas>
+
         </div>
       </div>
     </div>
 
-    <div class="col-md-6 col-sm-12 mb-2">
-      <div class=" flex-grow-1">
-        <div class="card-body">
-          <h5 class="card-title">Teacher Attendance</h5>
-          <canvas baseChart [data]="attendanceData" [type]="'bar'" class="chart-canvas"></canvas>
-          <p class="text-center mt-2">Weekly Based Assessment of teacher for all courses</p>
+    <!-- Teacher Attendance (Bar Chart) -->
+    <div class="col-lg-6 col-md-12">
+      <div class="card1 h-100 shadow-sm">
+        <div class="card-body1 d-flex flex-column align-items-center" style="height: 100%;">
+          <h5 class="card-title1 text-center mb-4">Teacher Attendance</h5>
+          <div class="chart-container1">
+            <canvas baseChart
+                    [data]="attendanceData"
+                    [type]="'bar'"
+                    class="chart-canvas1"></canvas>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
+
 </div>
